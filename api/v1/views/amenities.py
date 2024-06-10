@@ -14,9 +14,8 @@ def getting_all_objects():
     dict_amenity = {}
     dict_amenity = storage.all(classes['Amenity'])
     all_amenity = []
-    if dict_amenity:
-        for key in dict_amenity.values():
-            all_amenity.append(key.to_dict())
+    for key in dict_amenity.values():
+        all_amenity.append(key.to_dict())
     return jsonify(all_amenity)
 
 
@@ -28,8 +27,7 @@ def retrieve_amenity(amenity_id):
     amenity_object = storage.get(classes['Amenity'], amenity_id)
     if not amenity_object:
         abort(404)
-    if amenity_object:
-        return jsonify(amenity_object.to_dict())
+    return jsonify(amenity_object.to_dict())
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['DELETE'],
@@ -40,10 +38,9 @@ def deleting_amenity_object(amenity_id):
     amenity_object = storage.get(classes['Amenity'], amenity_id)
     if not amenity_object:
         abort(404)
-    if amenity_object:
-        storage.delete(amenity_object)
-        storage.save()
-    return make_response(jsonify({}), 200)
+    storage.delete(amenity_object)
+    storage.save()
+    return jsonify({}), 200
 
 
 @app_views.route('/amenities', methods=['POST'], strict_slashes=False)
@@ -51,7 +48,7 @@ def new_new_object():
     """ posting of a new amenity """
     amenity_object = request.get_json()
     if not request.get_json():
-        abort(400, description='Not JSON')
+        abort(400, description='Not a JSON')
     if 'name' not in amenity_object:
         abort(400, description='Missing name')
     amenity_instance = classes['Amenity'](**amenity_object)
@@ -76,4 +73,4 @@ def put_amenity_object(amenity_id):
         if keys not in ignore_list:
             setattr(existing_object, keys, values)
     storage.save()
-    return make_response(jsonify(existing_object.to_dict()), 200)
+    return jsonify(existing_object.to_dict()), 200

@@ -15,8 +15,9 @@ def define_state():
     """
     states = []
     states_obj = s.all(State)
-    for obj in states_obj.values():
-        states.append(obj.to_dict())
+    if states_obj:
+        for obj in states_obj.values():
+            states.append(obj.to_dict())
     return jsonify(states)
 
 
@@ -45,7 +46,8 @@ def state_by_id(state_id):
     fetched = s.get(State, state_id)
     if not fetched:
         abort(404)
-    return jsonify(fetched.to_dict())
+    if fetched:
+        return jsonify(fetched.to_dict())
 
 
 @app_views.route("/states/<state_id>",  methods=["PUT"], strict_slashes=False)
@@ -53,16 +55,16 @@ def state_put(state_id):
     """
     updates specific State object by ID
     """
-    state_request = request.get_json(silent=True)
+    state_request = request.get_json()
     if not request.get_json():
         abort(400, description='Not a JSON')
     fetched = s.get(State, state_id)
     if not fetched:
         abort(404)
-    for key, val in state_request.items():
-        if key not in ["id", "created_at", "updated_at"]:
-            setattr(fetched, key, val)
-    fetched.save()
+    for keys, vals in state_request.items():
+        if keys not in ["id", "created_at", "updated_at"]:
+            setattr(fetched, keys, vals)
+    s.save()
     return jsonify(fetched.to_dict()), 200
 
 
@@ -75,6 +77,7 @@ def state_delete(state_id):
     fetched = s.get(State, state_id)
     if not fetched:
         abort(404)
-    s.delete(fetched)
-    s.save()
+    if fetched:
+        s.delete(fetched)
+        s.save()
     return jsonify({}), 200
