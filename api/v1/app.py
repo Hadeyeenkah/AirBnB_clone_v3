@@ -9,9 +9,12 @@ from flask import Flask, Blueprint, jsonify, make_response
 from flask_cors import CORS
 from models import storage
 from os import getenv
+from flasgger import Swagger
+from flasgger.utils import swag_from
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app.register_blueprint(app_views)
 
 
@@ -28,6 +31,12 @@ def error(e):
     """handle 404 error"""
     return make_response({"error": "Not found"}, 404)
 
+app.config['SWAGGER'] = {
+    'title': 'AirBnB clone Restful API',
+    'uiversion': 3
+}
+
+Swagger(app)
 
 if __name__ == "__main__":
     host = getenv("HBNB_API_HOST")
