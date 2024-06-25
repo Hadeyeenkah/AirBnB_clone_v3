@@ -157,6 +157,6 @@ No known bugs at this time.
 Ogunwomoju Samuel - [Github] (https://github.com/Hadeyeenkah) / (https://x.com/O_g476)  
 
 
-Second part of Airbnb: Solomon Tole
+Second part of Airbnb: Rna 
 ## License
 Public Domain. No copy write protection. 
